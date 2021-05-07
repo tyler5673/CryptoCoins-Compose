@@ -144,4 +144,7 @@ dependencies {
     // Integration with observables
     implementation "androidx.compose.runtime:runtime-livedata:$COMPOSE_VERSION"
 
+    // UI Tests
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$COMPOSE_VERSION"
+
 }
