@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.cryptocoins"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -122,5 +122,26 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation "androidx.test:runner:1.3.0"
+
+    // Compose
+    final COMPOSE_VERSION = '1.0.0-beta06'
+    final ACTIVITY_COMPOSE_VERSION = '1.3.0-alpha07'
+    final LIFECYCLE_VIEWMODEL_COMPOSE_VERSION = '1.0.0-alpha04'
+    implementation "androidx.compose.ui:ui:$COMPOSE_VERSION"
+    // Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$COMPOSE_VERSION"
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation "androidx.compose.foundation:foundation:$COMPOSE_VERSION"
+    // Material Design
+    implementation "androidx.compose.material:material:$COMPOSE_VERSION"
+    // Material design icons
+    implementation "androidx.compose.material:material-icons-core:$COMPOSE_VERSION"
+    implementation "androidx.compose.material:material-icons-extended:$COMPOSE_VERSION"
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:$ACTIVITY_COMPOSE_VERSION"
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$LIFECYCLE_VIEWMODEL_COMPOSE_VERSION"
+    // Integration with observables
+    implementation "androidx.compose.runtime:runtime-livedata:$COMPOSE_VERSION"
 
 }
