@@ -4,5 +4,6 @@
     <string name="reload">Reload</string>
     <string name="loading">Loading</string>
     <string name="error">Error</string>
+    <string name="coin_details_error">Error loading coin details</string>
     <string name="coin_detail">Coin Detail</string>
 </resources>

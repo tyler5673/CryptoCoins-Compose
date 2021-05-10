@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_coin_details.*
 import com.google.accompanist.coil.rememberCoilPainter
+import kotlinx.coroutines.launch
 
 
 private const val COIN_ID = "COIN_ID"
@@ -36,7 +38,6 @@ class CoinDetailsActivity : AppCompatActivity() {
     private val coinDetailsViewModel: CoinDetailsViewModel by viewModels()
 
     companion object {
-
         fun createIntent(context: Context, coinId: String): Intent {
             val intent = Intent(context, CoinDetailsActivity::class.java)
             intent.putExtra(COIN_ID, coinId)
@@ -75,10 +76,14 @@ class CoinDetailsActivity : AppCompatActivity() {
                 showSuccessState((viewState as CoinDetailsViewModel.ViewState.Success).coin)
             }
             CoinDetailsViewModel.ViewState.Error -> {
-                showError()
+                showErrorState()
             }
         }
+    }
 
+    @Composable
+    fun showErrorState() {
+        Text(getString(R.string.coin_details_error))
     }
 
     @Composable
@@ -123,18 +128,4 @@ class CoinDetailsActivity : AppCompatActivity() {
             }
         }
     }
-
-
-    private fun showError() {
-        Snackbar.make(
-            findViewById(android.R.id.content),
-            getString(R.string.oops_something_went_wrong),
-            Snackbar.LENGTH_INDEFINITE
-        )
-            .setAction(getString(R.string.reload)) {
-                coinDetailsViewModel.getCoinDetails(coinId)
-            }
-            .show()
-    }
-
 }
