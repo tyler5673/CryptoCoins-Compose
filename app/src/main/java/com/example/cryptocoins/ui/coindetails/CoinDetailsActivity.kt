@@ -4,8 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import com.example.cryptocoins.R
 import com.example.cryptocoins.domain.Coin
@@ -38,7 +49,10 @@ class CoinDetailsActivity : AppCompatActivity() {
             coinId = this?.getString(COIN_ID, "") ?: ""
         }
 
-        setContentView(R.layout.activity_coin_details)
+        setContent {
+            createUx()
+        }
+
 
         setSupportActionBar(toolbar)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24px)
@@ -47,8 +61,41 @@ class CoinDetailsActivity : AppCompatActivity() {
         coinDetailsViewModel.getCoinDetails(coinId)
 
         coinDetailsViewModel.viewCommand.observe(this, Observer { handleCommand(it) })
-        coinDetailsViewModel.viewState.observe(this, Observer { handleState(it) })
     }
+
+    @Preview
+    @Composable
+    fun createUx() {
+        val viewState by coinDetailsViewModel.viewState.observeAsState()
+
+        when (viewState) {
+            is CoinDetailsViewModel.ViewState.Success -> {
+                showSuccessState((viewState as CoinDetailsViewModel.ViewState.Success).coin)
+            }
+            CoinDetailsViewModel.ViewState.Error -> {
+                showError()
+            }
+        }
+
+    }
+
+    @Composable
+    fun showSuccessState(coin: Coin) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(coin.symbol)
+            Text(coin.name)
+            coin.description?.let {
+                Text(coin.description.en)
+            }
+            Text(coin.name)
+            coin.genesisDate?.let {
+                Text(coin.genesisDate)
+            }
+        }
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -69,16 +116,6 @@ class CoinDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleState(state: CoinDetailsViewModel.ViewState) {
-        when (state) {
-            is CoinDetailsViewModel.ViewState.Success -> {
-                showContent(state.coin)
-            }
-            is CoinDetailsViewModel.ViewState.Error -> {
-                showError()
-            }
-        }
-    }
 
     private fun showContent(coin: Coin){
         Picasso.get()
@@ -93,9 +130,9 @@ class CoinDetailsActivity : AppCompatActivity() {
 
     private fun showError() {
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.oops_something_went_wrong), Snackbar.LENGTH_INDEFINITE)
-            .setAction(getString(R.string.reload), {
+            .setAction(getString(R.string.reload)) {
                 coinDetailsViewModel.getCoinDetails(coinId)
-            })
+            }
             .show()
     }
 
