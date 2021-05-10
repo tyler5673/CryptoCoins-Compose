@@ -1,6 +1,7 @@
 package com.example.cryptocoins.ui.coins
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -12,10 +13,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.example.cryptocoins.domain.Coin
 import com.example.cryptocoins.ui.coindetails.CoinDetailsActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +30,7 @@ class CoinsActivity : AppCompatActivity() {
 //    class CoinsActivity : AppCompatActivity(), CoinsAdapter.OnItemClickListener {
 
     private val coinsViewModel: CoinsViewModel by viewModels()
+    private val coins = MutableLiveData<List<Coin>?>()
 //    private val coinsAdapter = CoinsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +41,6 @@ class CoinsActivity : AppCompatActivity() {
         }
 
         coinsViewModel.getCoins()
-
-        // TODO: Delete
-//        setContentView(R.layout.activity_coins)
 
         /*
         recyclerView.apply {
@@ -50,23 +53,24 @@ class CoinsActivity : AppCompatActivity() {
             coinsViewModel.getCoins()
         }
 
-
-        coinsViewModel.viewCommand.observe(this, Observer { handleCommand(it) })
-        coinsViewModel.viewState.observe(this, Observer { handleState(it) })
          */
 
+        coinsViewModel.viewState.observe(this, Observer { handleState(it) })
     }
 
     @Preview
     @Composable
-    fun coinsList(coins: List<Coin>? = null) {
+    fun coinsList() {
         Column(
             modifier = Modifier
                 .background(Color.LightGray)
                 .size(100.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            coins?.forEach { coin ->
+
+            val coinData: List<Coin>? by coins.observeAsState()
+
+            coinData?.forEach { coin ->
                 Text(
                     coin.name,
                     color = Color.White
@@ -104,8 +108,7 @@ class CoinsActivity : AppCompatActivity() {
                 hideContent()
             }
             is CoinsViewModel.ViewState.Success -> {
-                // TODO: Update composable here somehow
-//                coinsAdapter.submitList(state.coins)
+                coins.value = state.coins
                 showContent()
                 hideError()
                 hideLoading()
