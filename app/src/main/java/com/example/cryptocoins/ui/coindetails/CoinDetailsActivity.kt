@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
@@ -14,16 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import com.example.cryptocoins.R
 import com.example.cryptocoins.domain.Coin
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_coin_details.*
+import com.google.accompanist.coil.rememberCoilPainter
+
 
 private const val COIN_ID = "COIN_ID"
 
@@ -84,6 +86,12 @@ class CoinDetailsActivity : AppCompatActivity() {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            coin.image?.let {
+                Image(
+                    painter = rememberCoilPainter(coin.image.large),
+                    contentDescription = stringResource(id = R.string.coin_detail)
+                )
+            }
             Text(coin.symbol)
             Text(coin.name)
             coin.description?.let {
@@ -117,19 +125,12 @@ class CoinDetailsActivity : AppCompatActivity() {
     }
 
 
-    private fun showContent(coin: Coin){
-        Picasso.get()
-            .load(coin.image?.large)
-            .into(coverImageView)
-
-        symbolTextView.text = coin.symbol
-        nameTextView.text = coin.name
-        descriptionTextView.text = coin.description?.en
-        genesisDateTextView.text = coin.genesisDate
-    }
-
     private fun showError() {
-        Snackbar.make(findViewById(android.R.id.content), getString(R.string.oops_something_went_wrong), Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(
+            findViewById(android.R.id.content),
+            getString(R.string.oops_something_went_wrong),
+            Snackbar.LENGTH_INDEFINITE
+        )
             .setAction(getString(R.string.reload)) {
                 coinDetailsViewModel.getCoinDetails(coinId)
             }
