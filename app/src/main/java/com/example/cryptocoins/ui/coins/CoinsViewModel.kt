@@ -8,13 +8,9 @@ import com.example.cryptocoins.core.common.SingleLiveEvent
 import com.example.cryptocoins.data.respositories.coin.CoinRepository
 import com.example.cryptocoins.domain.Coin
 import com.example.cryptocoins.domain.toDomainModels
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 class CoinsViewModel @ViewModelInject constructor(

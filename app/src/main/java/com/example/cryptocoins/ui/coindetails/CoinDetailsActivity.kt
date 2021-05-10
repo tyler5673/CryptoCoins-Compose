@@ -14,19 +14,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Observer
 import com.example.cryptocoins.R
 import com.example.cryptocoins.domain.Coin
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_coin_details.*
 import com.google.accompanist.coil.rememberCoilPainter
-import kotlinx.coroutines.launch
 
 
 private const val COIN_ID = "COIN_ID"
@@ -56,14 +51,9 @@ class CoinDetailsActivity : AppCompatActivity() {
             createUx()
         }
 
-
-        setSupportActionBar(toolbar)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24px)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         coinDetailsViewModel.getCoinDetails(coinId)
 
-        coinDetailsViewModel.viewCommand.observe(this, Observer { handleCommand(it) })
+        coinDetailsViewModel.viewCommand.observe(this, { handleCommand(it) })
     }
 
     @Preview
