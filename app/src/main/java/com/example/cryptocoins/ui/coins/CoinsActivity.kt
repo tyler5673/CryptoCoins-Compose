@@ -40,8 +40,6 @@ class CoinsActivity : AppCompatActivity() {
 
         coinsViewModel.getCoins()
         coinsViewModel.viewCommand.observe(this, { handleCommand(it) })
-
-        // TODO: Header and reload button?
     }
 
     @Preview
