@@ -7,14 +7,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +30,7 @@ class CoinsActivity : AppCompatActivity() {
 //    class CoinsActivity : AppCompatActivity(), CoinsAdapter.OnItemClickListener {
 
     private val coinsViewModel: CoinsViewModel by viewModels()
+    // TODO: Just observe directly on the state livedata from the viewmodel doofus
     private val coins = MutableLiveData<List<Coin>?>()
 //    private val coinsAdapter = CoinsAdapter()
 
@@ -64,8 +65,10 @@ class CoinsActivity : AppCompatActivity() {
         Column(
             modifier = Modifier
                 .background(Color.LightGray)
-                .size(100.dp)
                 .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.Start
         ) {
 
             val coinData: List<Coin>? by coins.observeAsState()
@@ -73,7 +76,8 @@ class CoinsActivity : AppCompatActivity() {
             coinData?.forEach { coin ->
                 Text(
                     coin.name,
-                    color = Color.White
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
