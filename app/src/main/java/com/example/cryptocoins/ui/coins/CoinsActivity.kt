@@ -20,6 +20,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.cryptocoins.domain.Coin
+import com.example.cryptocoins.R
 import com.example.cryptocoins.ui.coindetails.CoinDetailsActivity
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -64,12 +65,12 @@ class CoinsActivity : AppCompatActivity() {
 
     @Composable
     fun createLoadingState() {
-        Text("Loading")
+        Text(getString(R.string.loading))
     }
 
     @Composable
     fun createErrorState() {
-        Text("Error")
+        Text(getString(R.string.error))
     }
 
     @Composable
