@@ -8,9 +8,13 @@ import com.example.cryptocoins.core.common.SingleLiveEvent
 import com.example.cryptocoins.data.respositories.coin.CoinRepository
 import com.example.cryptocoins.domain.Coin
 import com.example.cryptocoins.domain.toDomainModels
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 class CoinsViewModel @ViewModelInject constructor(
@@ -21,6 +25,9 @@ class CoinsViewModel @ViewModelInject constructor(
     val viewState: LiveData<ViewState>
         get() = _viewState
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData()
+
+    val isRefreshing
+        get() = viewState.value is ViewState.Loading
 
 
     val viewCommand: LiveData<ViewCommand>

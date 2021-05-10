@@ -1,14 +1,13 @@
 package com.example.cryptocoins.ui.coins
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,77 +16,89 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.example.cryptocoins.domain.Coin
 import com.example.cryptocoins.ui.coindetails.CoinDetailsActivity
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CoinsActivity : AppCompatActivity() {
-//    class CoinsActivity : AppCompatActivity(), CoinsAdapter.OnItemClickListener {
 
     private val coinsViewModel: CoinsViewModel by viewModels()
-    // TODO: Just observe directly on the state livedata from the viewmodel doofus
-    private val coins = MutableLiveData<List<Coin>?>()
-//    private val coinsAdapter = CoinsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            coinsList()
+            createUx()
         }
 
         coinsViewModel.getCoins()
+        coinsViewModel.viewCommand.observe(this, { handleCommand(it) })
 
-        /*
-        recyclerView.apply {
-            coinsAdapter.onItemClickListener = this@CoinsActivity
-            adapter = coinsAdapter
-            addItemDecoration(CoinItemDecoration())
-        }
-
-        reloadButton.setOnClickListener {
-            coinsViewModel.getCoins()
-        }
-
-         */
-
-        coinsViewModel.viewState.observe(this, Observer { handleState(it) })
+        // TODO: Header and reload button?
     }
 
     @Preview
     @Composable
-    fun coinsList() {
-        Column(
-            modifier = Modifier
-                .background(Color.LightGray)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.Start
-        ) {
+    fun createUx() {
+        val viewState by coinsViewModel.viewState.observeAsState()
 
-            val coinData: List<Coin>? by coins.observeAsState()
+        when (viewState) {
+            is CoinsViewModel.ViewState.Loading -> {
+                createLoadingState()
+            }
+            is CoinsViewModel.ViewState.Error -> {
+                createErrorState()
+            }
+            is CoinsViewModel.ViewState.Success -> {
+                createCoinList((viewState as CoinsViewModel.ViewState.Success).coins)
+            }
+        }
 
-            coinData?.forEach { coin ->
-                Text(
-                    coin.name,
-                    color = Color.White,
-                    modifier = Modifier.fillMaxWidth()
-                )
+    }
+
+    @Composable
+    fun createLoadingState() {
+        Text("Loading")
+    }
+
+    @Composable
+    fun createErrorState() {
+        Text("Error")
+    }
+
+    @Composable
+    fun createCoinList(coins: List<Coin>) {
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = coinsViewModel.isRefreshing),
+            onRefresh = { coinsViewModel.getCoins() }
+            ) {
+            Column(
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.Start
+            ) {
+                coins.forEach { coin ->
+                    ClickableText(
+                        text = AnnotatedString(coin.name),
+                        style = TextStyle.Default,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        coinsViewModel.onCoinClicked(coin = coin)
+                    }
+                }
             }
         }
     }
 
-//    override fun onItemClick(coin: Coin) {
-//        coinsViewModel.onCoinClicked(coin)
-//    }
-
-    /*
     private fun handleCommand(command: CoinsViewModel.ViewCommand) {
         when (command) {
             is CoinsViewModel.ViewCommand.ShowCoinDetails -> {
@@ -96,51 +107,5 @@ class CoinsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-    }
-     */
-
-    private fun handleState(state: CoinsViewModel.ViewState) {
-        when (state) {
-            is CoinsViewModel.ViewState.Loading -> {
-                showLoading()
-                hideError()
-                hideContent()
-            }
-            is CoinsViewModel.ViewState.Error -> {
-                showError()
-                hideLoading()
-                hideContent()
-            }
-            is CoinsViewModel.ViewState.Success -> {
-                coins.value = state.coins
-                showContent()
-                hideError()
-                hideLoading()
-            }
-        }
-    }
-
-    private fun showLoading() {
-//        progressBar.visibility = View.VISIBLE
-    }
-
-    private fun hideLoading() {
-//        progressBar.visibility = View.GONE
-    }
-
-    private fun showError() {
-//        errorLinearLayout.visibility = View.VISIBLE
-    }
-
-    private fun hideError() {
-//        errorLinearLayout.visibility = View.GONE
-    }
-
-    private fun showContent() {
-//        recyclerView.visibility = View.VISIBLE
-    }
-
-    private fun hideContent() {
-//        recyclerView.visibility = View.GONE
     }
 }

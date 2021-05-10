@@ -131,6 +131,7 @@ dependencies {
     final COMPOSE_VERSION = '1.0.0-beta06'
     final ACTIVITY_COMPOSE_VERSION = '1.3.0-alpha07'
     final LIFECYCLE_VIEWMODEL_COMPOSE_VERSION = '1.0.0-alpha04'
+    final ACCOMPANIST_VERSION = '0.9.1'
     implementation "androidx.compose.ui:ui:$COMPOSE_VERSION"
     // Tooling support (Previews, etc.)
     implementation "androidx.compose.ui:ui-tooling:$COMPOSE_VERSION"
@@ -147,6 +148,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$LIFECYCLE_VIEWMODEL_COMPOSE_VERSION"
     // Integration with observables
     implementation "androidx.compose.runtime:runtime-livedata:$COMPOSE_VERSION"
+    // Swipe refresh integration
+    implementation "com.google.accompanist:accompanist-swiperefresh:$ACCOMPANIST_VERSION"
 
     // UI Tests
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$COMPOSE_VERSION"
