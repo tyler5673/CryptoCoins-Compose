@@ -5,8 +5,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
@@ -16,9 +18,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.cryptocoins.domain.Coin
 import com.example.cryptocoins.R
 import com.example.cryptocoins.ui.coindetails.CoinDetailsActivity
@@ -79,7 +83,6 @@ class CoinsActivity : AppCompatActivity() {
             ) {
             Column(
                 modifier = Modifier
-                    .background(Color.LightGray)
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceEvenly,
@@ -89,7 +92,19 @@ class CoinsActivity : AppCompatActivity() {
                     ClickableText(
                         text = AnnotatedString(coin.name),
                         style = TextStyle.Default,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .background(
+                                color = Color.LightGray,
+                                shape = RoundedCornerShape(50)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = Color.Black,
+                                shape = RoundedCornerShape(50)
+                            )
+                            .fillMaxWidth()
+                            .padding(10.dp)
                     ) {
                         coinsViewModel.onCoinClicked(coin = coin)
                     }
