@@ -17,11 +17,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.example.cryptocoins.domain.Coin
 import com.example.cryptocoins.R
@@ -46,7 +48,6 @@ class CoinsActivity : AppCompatActivity() {
         coinsViewModel.viewCommand.observe(this, { handleCommand(it) })
     }
 
-    @Preview
     @Composable
     fun createUx() {
         val viewState by coinsViewModel.viewState.observeAsState()
@@ -65,14 +66,20 @@ class CoinsActivity : AppCompatActivity() {
 
     }
 
+    @Preview("Loading State")
     @Composable
     fun createLoadingState() {
-        Text(getString(R.string.loading))
+        Text(
+            text = "Loading"
+        )
     }
 
+    @Preview("Error State")
     @Composable
     fun createErrorState() {
-        Text(getString(R.string.error))
+        Text(
+            text = "Error"
+        )
     }
 
     @Composable
@@ -89,27 +96,33 @@ class CoinsActivity : AppCompatActivity() {
                 horizontalAlignment = Alignment.Start
             ) {
                 coins.forEach { coin ->
-                    ClickableText(
-                        text = AnnotatedString(coin.name),
-                        style = TextStyle.Default,
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .background(
-                                color = Color.LightGray,
-                                shape = RoundedCornerShape(50)
-                            )
-                            .border(
-                                width = 1.dp,
-                                color = Color.Black,
-                                shape = RoundedCornerShape(50)
-                            )
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    ) {
-                        coinsViewModel.onCoinClicked(coin = coin)
-                    }
+                    coinRow(coin)
                 }
             }
+        }
+    }
+
+    @Preview("Coin Row")
+    @Composable
+    fun coinRow(coin: Coin = Coin(id = "", symbol = "", name = "Placeholder")) {
+        ClickableText(
+            text = AnnotatedString(coin.name),
+            style = TextStyle.Default,
+            modifier = Modifier
+                .padding(2.dp)
+                .background(
+                    color = Color.LightGray,
+                    shape = RoundedCornerShape(50)
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(50)
+                )
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            coinsViewModel.onCoinClicked(coin = coin)
         }
     }
 
